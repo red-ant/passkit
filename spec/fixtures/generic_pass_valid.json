@@ -1,0 +1,32 @@
+{
+  "formatVersion" : 1,
+  "passTypeIdentifier" : "pass.technology.place.dev",
+  "teamIdentifier" : "7HX6J445A7",
+  "serialNumber" : "001",
+  "locations" : [
+    {
+      "longitude" : -122.3748889,
+      "latitude" : 37.6189722
+    }
+  ],
+  "barcode" : {
+    "message" : "123456789",
+    "format" : "PKBarcodeFormatPDF417",
+    "messageEncoding" : "iso-8859-1"
+  },
+  "organizationName" : "ACA Projects Australia Pty Ltd",
+  "description" : "PlaceOS Wallet Testing",
+  "logoText" : "DCAL's Lemon Emporium",
+  "foregroundColor" : "rgb(255, 255, 255)",
+  "backgroundColor" : "rgb(221, 198, 4)",
+  "storeCard" : {
+    "primaryFields" : [
+      {
+        "key" : "balance",
+        "label" : "When life gives you lemons",
+        "value" : 20,
+        "currencyCode" : "AUD"
+      }
+    ]
+  }
+}
