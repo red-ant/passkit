@@ -29,7 +29,7 @@ export PRIVATE_KEY=/path/to/passkey.pem
 export PRIVATE_KEY_PASSWORD=purplemonkeydishwasher
 
 # Apple Worldwide Developer Relations Certification Authority certificate
-export WWDR_CERT/path/to/wwdr.pem
+export WWDR_CERT=/path/to/wwdr.pem
 ```
 
 ## Usage

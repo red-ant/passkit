@@ -3,6 +3,7 @@ require "digest"
 require "http/client"
 require "http/client/response"
 require "uri"
+require "../error"
 
 class PassKit::Manifest
   getter resources : Array(Resource)
@@ -17,7 +18,7 @@ class PassKit::Manifest
   end
 
   def add_file(name : String, content : String)
-    @resources << FileResource.new(name, content)
+    @resources << FileResource.new(name: name, content: content)
   end
 
   def to_json
@@ -32,6 +33,18 @@ class PassKit::Manifest
     end
   end
 
+  def validate!
+    raise Error::InvalidManifest.new "manifest missing required icon.png" unless valid?
+  end
+
+  def valid?
+    has_icon?
+  end
+
+  def has_icon?
+    @resources.any? { |resource| resource.name == "icon.png" || resource.name == "icon@2x.png" }
+  end
+
   abstract class Resource
     def digest
       Digest::SHA1.hexdigest(content)
@@ -39,10 +52,10 @@ class PassKit::Manifest
   end
 
   class FileResource < Resource
-    getter name
-    getter content
+    property name : String
+    property content : String
 
-    def initialize(@name : String, @content : String)
+    def initialize(@name, @content)
     end
   end
 
@@ -69,18 +82,11 @@ class PassKit::Manifest
       response = HTTP::Client.get(@uri)
 
       unless response.success?
-        raise HTTPError.new(response.status, response.body, response.status.description)
+        raise Error::HTTPError.new(response.status, response.body, response.status.description)
       end
 
       response
     end
   end
 
-  class HTTPError < ::Exception
-    property http_status : HTTP::Status
-    property http_body : String
-
-    def initialize(@http_status, @http_body, @message = nil)
-    end
-  end
 end

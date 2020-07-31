@@ -27,6 +27,8 @@ class PassKit::PKPass
   end
 
   def to_io
+    @manifest.validate!
+
     io = IO::Memory.new
     generate(io)
     io
