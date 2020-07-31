@@ -1,6 +1,6 @@
-# passkit
+# PassKit
 
-TODO: Write a description here
+Crystal shard for creating signed Apple Passes.
 
 ## Installation
 
