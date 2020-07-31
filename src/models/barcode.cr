@@ -6,6 +6,10 @@ module PassKit
     PKBarcodeFormatPDF417
     PKBarcodeFormatAztec
     PKBarcodeFormatCode128
+
+    def to_json(json : JSON::Builder)
+      json.string(to_s)
+    end
   end
 
   class Barcode

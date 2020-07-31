@@ -53,6 +53,10 @@ pass = PassKit::Pass.from_json(File.read("pass.json"))
 # Now generate a signed .pkpass file
 pk_pass = PassKit::PKPass.new(pass)
 
+# Add some file or URL
+pk_pass.add_file("icon.png", File.read("my_icon.png"))
+pk_pass.add_url("http://example.org/icon.png")
+
 # Do something with the generated file
 File.write("GoldenTicket.pkpass", pk_pass.to_s)
 ```
