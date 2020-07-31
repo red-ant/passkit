@@ -50,7 +50,7 @@ pass = PassKit::Pass.new(
 # Or ingest a pass.json
 pass = PassKit::Pass.from_json(File.read("pass.json"))
 
-# Now generate a signed `.pkpass` file
+# Now generate a signed .pkpass file
 pk_pass = PassKit::PKPass.new(pass)
 
 # Do something with the generated file
@@ -59,7 +59,7 @@ File.write("GoldenTicket.pkpass", pk_pass.to_s)
 
 ## Contributing
 
-1. Fork it (<https://github.com/your-github-user/passkit/fork>)
+1. Fork it (<https://github.com/red-ant/passkit/fork>)
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
