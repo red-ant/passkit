@@ -11,9 +11,9 @@ describe PassKit::Pass do
     locations.first.latitude.should eq 37.6189722
     locations.first.longitude.should eq -122.3748889
 
-    barcode = pass.barcode.as(PassKit::Pass::Barcode)
+    barcode = pass.barcode.as(PassKit::Barcode)
     barcode.message.should eq "123456789"
-    barcode.format.should eq "PKBarcodeFormatPDF417"
+    barcode.format.should eq PassKit::BarcodeFormat::PKBarcodeFormatPDF417
     barcode.message_encoding.should eq "iso-8859-1"
   end
 
@@ -24,9 +24,25 @@ describe PassKit::Pass do
       serial_number: "12345",
       team_identifier: "TM123",
       description: "The golden ticket",
-      logo_text: "Willy Wonka inc.",
+      logo_text: "Willy Wonka inc."
     )
     pass.pass_type_idenitifer.should eq "pass.com.example"
+  end
+
+  it "can be passed a barcode" do
+    pass = PassKit::Pass.new(
+      pass_type_idenitifer: "pass.com.example",
+      organization_name: "PlaceOS",
+      serial_number: "12345",
+      team_identifier: "TM123",
+      description: "The golden ticket",
+      logo_text: "Willy Wonka inc."
+    )
+
+    pass.add_qr_code("1234", "iso-8859-1")
+
+    pass.barcodes[0].message.should eq "1234"
+    pass.barcodes[0].message_encoding.should eq "iso-8859-1"
   end
 end
 

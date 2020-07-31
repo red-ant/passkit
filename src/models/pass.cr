@@ -1,4 +1,5 @@
 require "json"
+require "./barcode"
 
 class PassKit::Pass
   include JSON::Serializable
@@ -88,8 +89,8 @@ class PassKit::Pass
   # Visual Appearance Keys
   #
 
-  property barcode : Barcode?
-  property barcodes : Array(Barcode)?
+  property barcode : PassKit::Barcode?
+  property barcodes : Array(PassKit::Barcode) = [] of PassKit::Barcode
 
   @[JSON::Field(key: "backgroundColor")]
   property background_color : String?
@@ -176,21 +177,34 @@ class PassKit::Pass
       @event_ticket = style
     when PassType::StoreCard
       @store_ticket = style
+    else
+      raise "unknown style: #{style}"
     end
   end
 
-  struct Barcode
-    include JSON::Serializable
+  def add_barcode(format : BarcodeFormat, message : String, message_encoding : String, alt_text : String? = nil)
+    @barcodes << Barcode.new(
+      format: format,
+      message: message,
+      message_encoding: message_encoding,
+      alt_text: alt_text
+    )
+  end
 
-    # TODO - format validation?
-    property format : String
-    property message : String
+  def add_qr_code(message : String, message_encoding : String, alt_text : String? = nil)
+    add_barcode(BarcodeFormat::PKBarcodeFormatQR, message, message_encoding, alt_text)
+  end
 
-    @[JSON::Field(key: "messageEncoding")]
-    property message_encoding : String
+  def add_aztec_code(message : String, message_encoding : String, alt_text : String? = nil)
+    add_barcode(BarcodeFormat::PKBarcodeFormatAztec, message, message_encoding, alt_text)
+  end
 
-    @[JSON::Field(key: "altText")]
-    property alt_text : String?
+  def add_pdf417(message : String, message_encoding : String, alt_text : String? = nil)
+    add_barcode(BarcodeFormat::PKBarcodeFormatPDF417, message, message_encoding, alt_text)
+  end
+
+  def add_code_128(message : String, message_encoding : String, alt_text : String? = nil)
+    add_barcode(BarcodeFormat::PKBarcodeFormatCode128, message, message_encoding, alt_text)
   end
 
   struct Beacon

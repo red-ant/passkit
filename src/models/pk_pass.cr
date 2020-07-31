@@ -22,6 +22,10 @@ class PassKit::PKPass
     @manifest.add_file(name, content)
   end
 
+  def to_s
+    to_io.to_s
+  end
+
   def to_io
     io = IO::Memory.new
     generate(io)
