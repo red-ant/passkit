@@ -162,9 +162,24 @@ class PassKit::Pass
     @web_service_url = nil,
     @nfc = nil,
     type : PassType = PassType::Generic,
-    style : Style? = nil
+    style : Style? = nil,
+    auxiliary_fields : Array(FieldTuple | Field)? = nil,
+    back_fields : Array(FieldTuple | Field)? = nil,
+    header_fields : Array(FieldTuple | Field)? = nil,
+    primary_fields : Array(FieldTuple | Field)? = nil,
+    secondary_fields : Array(FieldTuple | Field)? = nil,
+    transit_type : String? = nil,
   )
     @format_version = APPLE_PASS_FORMAT_VERSION
+
+    style = Style.new(
+      auxiliary_fields: auxiliary_fields,
+      back_fields: back_fields,
+      header_fields: header_fields,
+      primary_fields: primary_fields,
+      secondary_fields: secondary_fields,
+      transit_type: transit_type
+    )
 
     case type
     when PassType::Generic
@@ -176,9 +191,9 @@ class PassKit::Pass
     when PassType::EventTicket
       @event_ticket = style
     when PassType::StoreCard
-      @store_ticket = style
+      @store_card = style
     else
-      raise "unknown style: #{style}"
+      raise "unknown style: #{type}"
     end
   end
 
@@ -220,14 +235,25 @@ class PassKit::Pass
     property relevant_text : String?
   end
 
+  alias FieldValue = (String | Time | Int32 | Float64)
+  alias FieldTuple = NamedTuple(key: String, value: FieldValue) |
+                     NamedTuple(key: String, value: FieldValue, label: String?) |
+                     NamedTuple(
+                       key: String,
+                       value: FieldValue,
+                       label: String?,
+                       attributed_value: FieldValue?,
+                       change_message: String?,
+                       data_detector_types: Array(String)?,
+                       text_alignment: String?
+                     )
+
   struct Field
     include JSON::Serializable
 
-    alias FieldValue = (String | Time | Int32 | Float64)?
-
     property key : String
-    property label : String?
     property value : FieldValue
+    property label : String?
 
     @[JSON::Field(key: "attributedValue")]
     property attributed_value : FieldValue?
@@ -241,6 +267,16 @@ class PassKit::Pass
 
     @[JSON::Field(key: "textAlignment")]
     property text_alignment : String?
+
+    def initialize(attributes : FieldTuple)
+      @key = attributes[:key]
+      @value = attributes[:value]
+      @label = attributes[:label]?
+      @attributed_value = attributes[:attributed_value]?
+      @change_message = attributes[:change_message]?
+      @data_detector_types = attributes[:data_detector_types]?
+      @text_alignment = attributes[:text_alignment]?
+    end
   end
 
   struct Location
@@ -283,5 +319,24 @@ class PassKit::Pass
 
     @[JSON::Field(key: "transitType")]
     property transit_type : String?
+
+    def initialize(
+      auxiliary_fields : Array(FieldTuple)? = nil,
+      back_fields : Array(FieldTuple)? = nil,
+      header_fields : Array(FieldTuple)? = nil,
+      primary_fields : Array(FieldTuple)? = nil,
+      secondary_fields : Array(FieldTuple)? = nil,
+      @transit_type : String? = nil,
+    )
+      @auxiliary_fields = convert_to_fields(auxiliary_fields)
+      @back_fields = convert_to_fields(back_fields)
+      @header_fields = convert_to_fields(header_fields)
+      @primary_fields = convert_to_fields(primary_fields)
+      @secondary_fields = convert_to_fields(secondary_fields)
+    end
+
+    def convert_to_fields(fields : Array(FieldTuple)?)
+      fields.map { |field| Field.new(field) } if fields
+    end
   end
 end

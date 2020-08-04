@@ -24,7 +24,9 @@ describe PassKit::Pass do
       serial_number: "12345",
       team_identifier: "TM123",
       description: "The golden ticket",
-      logo_text: "Willy Wonka inc."
+      logo_text: "Willy Wonka inc.",
+      type: PassKit::Pass::PassType::Generic,
+      header_fields: [{key: "test", value: "test"}]
     )
     pass.pass_type_identifier.should eq "pass.com.example"
   end

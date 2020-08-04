@@ -6,7 +6,7 @@ describe PassKit::Manifest do
   describe "#to_json" do
     it "works when empty" do
       manifest = create_manifest
-      manifest.to_json.should eq "{\"pass.json\":\"623a67d8ff6103a668eb7e75935151f10bad4afb\"}"
+      manifest.to_json.should eq "{\"pass.json\":\"86538f1ba20d238bfba8cddb4cbd37a11380ea12\"}"
     end
 
     it "works with an added URL" do
@@ -15,7 +15,7 @@ describe PassKit::Manifest do
 
       manifest = create_manifest
       manifest.add_url(url)
-      manifest.to_json.should eq "{\"pass.json\":\"623a67d8ff6103a668eb7e75935151f10bad4afb\",\"icon.txt\":\"9ce3bd4224c8c1780db56b4125ecf3f24bf748b7\"}"
+      manifest.to_json.should eq "{\"pass.json\":\"86538f1ba20d238bfba8cddb4cbd37a11380ea12\",\"icon.txt\":\"9ce3bd4224c8c1780db56b4125ecf3f24bf748b7\"}"
     end
 
     it "handles URLs that result in a 404" do
