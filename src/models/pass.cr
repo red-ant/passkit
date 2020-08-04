@@ -14,7 +14,7 @@ class PassKit::Pass
   property format_version : Int32
 
   @[JSON::Field(key: "passTypeIdentifier")]
-  property pass_type_idenitifer : String
+  property pass_type_identifier : String
 
   @[JSON::Field(key: "organizationName")]
   property organization_name : String
@@ -136,7 +136,7 @@ class PassKit::Pass
   end
 
   def initialize(
-    @pass_type_idenitifer,
+    @pass_type_identifier,
     @organization_name,
     @serial_number,
     @team_identifier,

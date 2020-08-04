@@ -39,7 +39,7 @@ require "passkit"
 
 # Create a new pass definition
 pass = PassKit::Pass.new(
-  pass_type_idenitifer: "pass.com.example",
+  pass_type_identifier: "pass.com.example",
   organization_name: "Willy Wonka",
   serial_number: "12345",
   team_identifier: "TM123",

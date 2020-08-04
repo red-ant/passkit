@@ -88,5 +88,4 @@ class PassKit::Manifest
       response
     end
   end
-
 end

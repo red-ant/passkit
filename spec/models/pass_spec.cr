@@ -5,7 +5,7 @@ describe PassKit::Pass do
     json = File.read(fixture_file("generic_pass_valid.json"))
     pass = PassKit::Pass.from_json(json)
     pass.format_version.should eq(1)
-    pass.pass_type_idenitifer.should eq("pass.technology.place.dev")
+    pass.pass_type_identifier.should eq("pass.technology.place.dev")
 
     locations = pass.locations.as(Array(PassKit::Pass::Location))
     locations.first.latitude.should eq 37.6189722
@@ -19,19 +19,19 @@ describe PassKit::Pass do
 
   it "can be instantiated" do
     pass = PassKit::Pass.new(
-      pass_type_idenitifer: "pass.com.example",
+      pass_type_identifier: "pass.com.example",
       organization_name: "PlaceOS",
       serial_number: "12345",
       team_identifier: "TM123",
       description: "The golden ticket",
       logo_text: "Willy Wonka inc."
     )
-    pass.pass_type_idenitifer.should eq "pass.com.example"
+    pass.pass_type_identifier.should eq "pass.com.example"
   end
 
   it "can be passed a barcode" do
     pass = PassKit::Pass.new(
-      pass_type_idenitifer: "pass.com.example",
+      pass_type_identifier: "pass.com.example",
       organization_name: "PlaceOS",
       serial_number: "12345",
       team_identifier: "TM123",
