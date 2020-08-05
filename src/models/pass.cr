@@ -64,7 +64,7 @@ class PassKit::Pass
   property max_distance : Int32?
 
   @[JSON::Field(key: "relevantDate")]
-  property relevant_date : Time?
+  property relevant_date : String?
 
   #
   # Style Keys
@@ -147,7 +147,6 @@ class PassKit::Pass
     @expiration_date = nil,
     @voided = nil,
     @beacons = [] of Beacon,
-    @locations = [] of Location,
     @max_distance = nil,
     @relevant_date = nil,
     @barcode = nil,
@@ -169,6 +168,7 @@ class PassKit::Pass
     primary_fields : Array(FieldTuple | Field)? = nil,
     secondary_fields : Array(FieldTuple | Field)? = nil,
     transit_type : String? = nil,
+    locations : Array(LocationTuple | Location)? = nil,
   )
     @format_version = APPLE_PASS_FORMAT_VERSION
 
@@ -180,6 +180,12 @@ class PassKit::Pass
       secondary_fields: secondary_fields,
       transit_type: transit_type
     )
+
+    if locations
+      @locations = locations.map do |location|
+        location.is_a?(Location) ? location : Location.new(location)
+      end
+    end
 
     case type
     when PassType::Generic
@@ -279,6 +285,10 @@ class PassKit::Pass
     end
   end
 
+  alias LocationTuple = NamedTuple(latitude: Float64, longitude: Float64) |
+                        NamedTuple(latitude: Float64, longitude: Float64, altitude: Float64?) |
+                        NamedTuple(latitude: Float64, longitude: Float64, altitude: Float64?, relevant_text: String?)
+
   struct Location
     include JSON::Serializable
 
@@ -288,6 +298,21 @@ class PassKit::Pass
 
     @[JSON::Field(key: "relevantText")]
     property relevant_text : String?
+
+    def initialize(
+      @latitude : Float64,
+      @longitude : Float64,
+      @altitude : Float64? = nil,
+      @relevant_text : String? = nil
+    )
+    end
+
+    def initialize(attributes : LocationTuple)
+      @latitude = attributes[:latitude]
+      @longitude = attributes[:longitude]
+      @altitude = attributes[:altitude]?
+      @relevant_text = attributes[:relevant_text]?
+    end
   end
 
   struct NFC

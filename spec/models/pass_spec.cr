@@ -46,6 +46,39 @@ describe PassKit::Pass do
     pass.barcodes[0].message.should eq "1234"
     pass.barcodes[0].message_encoding.should eq "iso-8859-1"
   end
+
+  it "can be passed an array of locations" do
+    pass = PassKit::Pass.new(
+      pass_type_identifier: "pass.com.example",
+      organization_name: "PlaceOS",
+      serial_number: "12345",
+      team_identifier: "TM123",
+      description: "The golden ticket",
+      locations: [
+        {
+          latitude: 37.424299996,
+          longitude: -122.0925956000001
+        },
+        {
+          latitude: 37.424299996,
+          longitude: -122.0925956000001,
+          altitude: 200.0,
+          relevant_text: "This is some relevant text"
+        },
+        PassKit::Pass::Location.new(latitude: 31.1, longitude: -121.1)
+      ]
+    )
+
+    locations = pass.locations.as(Array(PassKit::Pass::Location))
+    locations[0].latitude.should eq 37.424299996
+    locations[0].longitude.should eq -122.0925956000001
+    locations[1].latitude.should eq 37.424299996
+    locations[1].longitude.should eq -122.0925956000001
+    locations[1].altitude.should eq 200.0
+    locations[1].relevant_text.should eq "This is some relevant text"
+    locations[2].latitude.should eq 31.1
+    locations[2].longitude.should eq -121.1
+  end
 end
 
 private def fixture_file(file : String)
