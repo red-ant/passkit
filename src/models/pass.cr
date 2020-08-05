@@ -2,6 +2,7 @@ require "json"
 require "./barcode"
 require "./beacon"
 require "./location"
+require "./nfc"
 require "./style"
 
 module PassKit
@@ -161,7 +162,6 @@ module PassKit
       @suppress_strip_shine = nil,
       @authentication_token = nil,
       @web_service_url = nil,
-      @nfc = nil,
 
       # Style related
       type : PassType = PassType::Generic,
@@ -176,6 +176,7 @@ module PassKit
       locations : Array(LocationTuple | Location)? = nil,
       barcodes : Array(BarcodeTuple | Barcode)? = nil,
       beacons : Array(BeaconTuple | Beacon)? = nil,
+      nfc : (NFC | NFCTuple)? = nil
     )
       @format_version = APPLE_PASS_FORMAT_VERSION
 
@@ -220,15 +221,10 @@ module PassKit
           beacon.is_a?(Beacon) ? beacon : Beacon.new(beacon)
         end
       end
-    end
 
-    struct NFC
-      include JSON::Serializable
-
-      property message : String
-
-      @[JSON::Field(key: "encryptionPublicKey")]
-      property encryption_public_key : String?
+      if nfc
+        @nfc = nfc.is_a?(NFC) ? nfc : NFC.new(nfc)
+      end
     end
   end
 end

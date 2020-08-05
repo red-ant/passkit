@@ -83,6 +83,41 @@ describe PassKit::Pass do
     locations[2].latitude.should eq 31.1
     locations[2].longitude.should eq -121.1
   end
+
+  it "can be passed an array of beacons" do
+    pass = PassKit::Pass.new(
+      pass_type_identifier: "pass.com.example",
+      organization_name: "PlaceOS",
+      serial_number: "12345",
+      team_identifier: "TM123",
+      description: "The golden ticket",
+      beacons: [
+        { proximity_uuid: "1234ABCD" },
+        { proximity_uuid: "4321DCBA", major: UInt16.new(1), minor: UInt16.new(2) },
+        PassKit::Beacon.new(proximity_uuid: "1111AAAA")
+      ]
+    )
+
+    beacons = pass.beacons.as(Array(PassKit::Beacon))
+    beacons[0].proximity_uuid.should eq "1234ABCD"
+    beacons[1].proximity_uuid.should eq "4321DCBA"
+    beacons[1].major.should eq 1
+    beacons[1].minor.should eq 2
+    beacons[2].proximity_uuid.should eq "1111AAAA"
+  end
+
+  it "can be passed an NFC tuple" do
+    pass = PassKit::Pass.new(
+      pass_type_identifier: "pass.com.example",
+      organization_name: "PlaceOS",
+      serial_number: "12345",
+      team_identifier: "TM123",
+      description: "The golden ticket",
+      nfc: { message: "hello" }
+    )
+
+    pass.nfc.not_nil!.message.should eq "hello"
+  end
 end
 
 private def fixture_file(file : String)
