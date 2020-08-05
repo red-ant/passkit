@@ -181,12 +181,6 @@ class PassKit::Pass
       transit_type: transit_type
     )
 
-    if locations
-      @locations = locations.map do |location|
-        location.is_a?(Location) ? location : Location.new(location)
-      end
-    end
-
     case type
     when PassType::Generic
       @generic = style
@@ -200,6 +194,12 @@ class PassKit::Pass
       @store_card = style
     else
       raise "unknown style: #{type}"
+    end
+
+    if locations
+      @locations = locations.map do |location|
+        location.is_a?(Location) ? location : Location.new(location)
+      end
     end
   end
 
