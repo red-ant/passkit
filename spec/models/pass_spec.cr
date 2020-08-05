@@ -7,7 +7,7 @@ describe PassKit::Pass do
     pass.format_version.should eq(1)
     pass.pass_type_identifier.should eq("pass.technology.place.dev")
 
-    locations = pass.locations.as(Array(PassKit::Pass::Location))
+    locations = pass.locations.as(Array(PassKit::Location))
     locations.first.latitude.should eq 37.6189722
     locations.first.longitude.should eq -122.3748889
 
@@ -25,26 +25,30 @@ describe PassKit::Pass do
       team_identifier: "TM123",
       description: "The golden ticket",
       logo_text: "Willy Wonka inc.",
-      type: PassKit::Pass::PassType::Generic,
+      type: PassKit::PassType::Generic,
       header_fields: [{key: "test", value: "test"}]
     )
     pass.pass_type_identifier.should eq "pass.com.example"
   end
 
-  it "can be passed a barcode" do
+  it "can be passed a qr code" do
     pass = PassKit::Pass.new(
       pass_type_identifier: "pass.com.example",
       organization_name: "PlaceOS",
       serial_number: "12345",
       team_identifier: "TM123",
       description: "The golden ticket",
-      logo_text: "Willy Wonka inc."
+      logo_text: "Willy Wonka inc.",
+      barcodes: [{
+        format: PassKit::Barcode::QR,
+        message: "well, hello there",
+        message_encoding: "iso-8859-1"
+      }]
     )
 
-    pass.add_qr_code("1234", "iso-8859-1")
-
-    pass.barcodes[0].message.should eq "1234"
-    pass.barcodes[0].message_encoding.should eq "iso-8859-1"
+    barcodes = pass.barcodes.as(Array(PassKit::Barcode))
+    barcodes[0].format.should eq PassKit::BarcodeFormat::PKBarcodeFormatQR
+    barcodes[0].message.should eq "well, hello there"
   end
 
   it "can be passed an array of locations" do
@@ -65,11 +69,11 @@ describe PassKit::Pass do
           altitude: 200.0,
           relevant_text: "This is some relevant text"
         },
-        PassKit::Pass::Location.new(latitude: 31.1, longitude: -121.1)
+        PassKit::Location.new(latitude: 31.1, longitude: -121.1)
       ]
     )
 
-    locations = pass.locations.as(Array(PassKit::Pass::Location))
+    locations = pass.locations.as(Array(PassKit::Location))
     locations[0].latitude.should eq 37.424299996
     locations[0].longitude.should eq -122.0925956000001
     locations[1].latitude.should eq 37.424299996
